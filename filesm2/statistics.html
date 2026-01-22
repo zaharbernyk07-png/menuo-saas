@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistics — Menuo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+        .stat-box { background: var(--bg-secondary); border: 1px solid var(--border-primary); border-radius: var(--radius-lg); padding: 20px; }
+        .stat-box-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+        .stat-box-icon { width: 40px; height: 40px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .stat-box-trend { font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 10px; display: flex; align-items: center; gap: 4px; }
+        .stat-box-trend.up { background: rgba(0,212,170,0.15); color: var(--accent-success); }
+        .stat-box-trend.down { background: rgba(255,92,92,0.15); color: var(--accent-danger); }
+        .stat-box-trend svg { width: 12px; height: 12px; }
+        .stat-box-value { font-size: 32px; font-weight: 700; font-family: var(--font-mono); margin-bottom: 4px; }
+        .stat-box-label { font-size: 13px; color: var(--text-tertiary); }
+        .stat-box-comparison { font-size: 11px; color: var(--text-tertiary); margin-top: 8px; }
+        
+        .ai-analysis-card { background: linear-gradient(135deg, rgba(99,91,255,0.1) 0%, rgba(0,212,170,0.05) 100%); border: 1px solid var(--accent-primary); border-radius: var(--radius-xl); padding: 24px; margin-bottom: 24px; }
+        .ai-analysis-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+        .ai-badge { display: flex; align-items: center; gap: 6px; padding: 6px 12px; background: var(--gradient-stripe); border-radius: 20px; font-size: 12px; font-weight: 600; color: white; }
+        .ai-analysis-content { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
+        .ai-summary { background: var(--bg-secondary); border-radius: var(--radius-lg); padding: 20px; }
+        .ai-summary h4 { font-size: 14px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .ai-summary p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 12px; }
+        .ai-recommendations { display: flex; flex-direction: column; gap: 12px; }
+        .ai-rec-item { background: var(--bg-secondary); border-radius: var(--radius-lg); padding: 16px; }
+        .ai-rec-item h5 { font-size: 13px; font-weight: 600; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+        .ai-rec-item p { font-size: 12px; color: var(--text-secondary); }
+        
+        .chart-card { background: var(--bg-secondary); border: 1px solid var(--border-primary); border-radius: var(--radius-xl); padding: 24px; margin-bottom: 24px; }
+        .chart-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .chart-title { font-size: 16px; font-weight: 600; }
+        .chart-tabs { display: flex; gap: 4px; background: var(--bg-tertiary); padding: 4px; border-radius: var(--radius-md); }
+        .chart-tab { padding: 6px 12px; background: none; border: none; border-radius: var(--radius-sm); font-size: 12px; font-weight: 500; color: var(--text-tertiary); cursor: pointer; font-family: inherit; }
+        .chart-tab.active { background: var(--bg-elevated); color: var(--text-primary); }
+        
+        .bar-chart { display: flex; align-items: flex-end; gap: 12px; height: 220px; padding: 20px 0; }
+        .bar-group { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .bar-stack { display: flex; align-items: flex-end; gap: 3px; height: 180px; }
+        .bar { width: 24px; border-radius: 4px 4px 0 0; transition: all 0.3s ease; cursor: pointer; position: relative; }
+        .bar:hover { opacity: 0.8; }
+        .bar:hover::after { content: attr(data-value); position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background: var(--bg-elevated); padding: 4px 8px; border-radius: 4px; font-size: 11px; font-family: var(--font-mono); white-space: nowrap; box-shadow: var(--shadow-md); }
+        .bar.revenue { background: var(--accent-success); }
+        .bar.expenses { background: var(--accent-danger); }
+        .bar.orders { background: var(--accent-primary); }
+        .bar.guests { background: var(--accent-warning); }
+        .bar-label { font-size: 11px; color: var(--text-tertiary); }
+        
+        .donut-chart { width: 180px; height: 180px; border-radius: 50%; position: relative; display: flex; align-items: center; justify-content: center; }
+        .donut-center { position: absolute; width: 100px; height: 100px; background: var(--bg-secondary); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .donut-value { font-size: 24px; font-weight: 700; font-family: var(--font-mono); }
+        .donut-label { font-size: 11px; color: var(--text-tertiary); }
+        
+        .comparison-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+        .comparison-card { background: var(--bg-secondary); border: 1px solid var(--border-primary); border-radius: var(--radius-lg); padding: 20px; }
+        .comparison-title { font-size: 14px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
+        .comparison-row { display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border-primary); }
+        .comparison-row:last-child { border-bottom: none; }
+        .comparison-label { flex: 1; font-size: 13px; color: var(--text-secondary); }
+        .comparison-values { display: flex; gap: 20px; }
+        .comparison-val { width: 80px; text-align: right; font-family: var(--font-mono); font-size: 13px; }
+        .comparison-val.prev { color: var(--text-tertiary); }
+        .comparison-change { width: 70px; text-align: right; font-size: 12px; font-weight: 600; }
+        .comparison-change.up { color: var(--accent-success); }
+        .comparison-change.down { color: var(--accent-danger); }
+        
+        .heatmap-container { display: grid; grid-template-columns: 60px repeat(7, 1fr); gap: 4px; }
+        .heatmap-row-label { font-size: 11px; color: var(--text-tertiary); display: flex; align-items: center; }
+        .heatmap-cell { aspect-ratio: 1; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; cursor: pointer; transition: all var(--transition-fast); }
+        .heatmap-cell:hover { transform: scale(1.1); }
+        .heatmap-cell.level-0 { background: var(--bg-tertiary); color: var(--text-tertiary); }
+        .heatmap-cell.level-1 { background: rgba(0,212,170,0.2); color: var(--accent-success); }
+        .heatmap-cell.level-2 { background: rgba(0,212,170,0.4); color: var(--accent-success); }
+        .heatmap-cell.level-3 { background: rgba(0,212,170,0.6); color: white; }
+        .heatmap-cell.level-4 { background: rgba(0,212,170,0.8); color: white; }
+        .heatmap-cell.level-5 { background: var(--accent-success); color: white; }
+        .heatmap-header { font-size: 11px; color: var(--text-tertiary); text-align: center; padding: 8px 0; }
+        
+        .top-items-list { display: flex; flex-direction: column; gap: 12px; }
+        .top-item { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--bg-tertiary); border-radius: var(--radius-md); }
+        .top-item-rank { width: 28px; height: 28px; border-radius: 50%; background: var(--bg-secondary); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
+        .top-item-rank.gold { background: rgba(255,187,0,0.2); color: var(--accent-warning); }
+        .top-item-rank.silver { background: rgba(192,192,192,0.2); color: #c0c0c0; }
+        .top-item-rank.bronze { background: rgba(205,127,50,0.2); color: #cd7f32; }
+        .top-item-info { flex: 1; }
+        .top-item-name { font-size: 14px; font-weight: 500; }
+        .top-item-meta { font-size: 12px; color: var(--text-tertiary); }
+        .top-item-value { font-family: var(--font-mono); font-weight: 600; }
+        
+        .period-selector { display: flex; gap: 8px; }
+        .period-btn { padding: 8px 16px; background: var(--bg-tertiary); border: 1px solid var(--border-primary); border-radius: var(--radius-md); font-size: 13px; font-weight: 500; color: var(--text-secondary); cursor: pointer; font-family: inherit; transition: all var(--transition-fast); }
+        .period-btn:hover { background: var(--bg-hover); }
+        .period-btn.active { background: var(--accent-primary); border-color: var(--accent-primary); color: white; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="logo"><div class="logo-icon">M</div><span class="logo-text">Menuo</span></a>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Main</div>
+                    <a href="index.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</a>
+                    <a href="orders.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>Orders<span class="nav-badge">12</span></a>
+                    <a href="reservations.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Reservations</a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Management</div>
+                    <a href="menus.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>Menus</a>
+                    <a href="tables.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8m-4-4v4"/></svg>Tables</a>
+                    <a href="staff.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Staff</a>
+                    <a href="inventory.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7h-9m9 10h-9M4 7h.01M4 17h.01"/></svg>Inventory</a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Analytics</div>
+                    <a href="statistics.html" class="nav-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>Statistics</a>
+                    <a href="finances.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Finances</a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">AI</div>
+                    <a href="ai.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 014 4c0 1.95-1.4 3.58-3.25 3.93L12 22l-.75-12.07A4.001 4.001 0 0112 2z"/><circle cx="12" cy="6" r="2"/></svg>Assistant<span class="nav-badge" style="background:var(--gradient-stripe);color:white">NEW</span></a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Plan</div>
+                    <a href="plan.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Subscription<span class="nav-badge" style="background:linear-gradient(135deg,#635bff,#00d4aa);color:white">PRO</span></a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">System</div>
+                    <a href="settings.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Settings</a>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-card"><div class="user-avatar">ZB</div><div class="user-info"><div class="user-name">Zakhar Bernyk</div><div class="user-role">Administrator</div></div></div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="header">
+                <div class="header-left">
+                    <h1 class="page-title">Statistics & Analytics</h1>
+                </div>
+                <div class="header-right">
+                    <div class="period-selector">
+                        <button class="period-btn">Today</button>
+                        <button class="period-btn">Week</button>
+                        <button class="period-btn active">Month</button>
+                        <button class="period-btn">Quarter</button>
+                        <button class="period-btn">Year</button>
+                    </div>
+                    <button class="btn-secondary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export</button>
+                </div>
+            </header>
+
+            <div class="dashboard">
+                <!-- Key Metrics -->
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-box-header">
+                            <div class="stat-box-icon" style="background:rgba(0,212,170,0.15)">💰</div>
+                            <div class="stat-box-trend up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>+12.5%</div>
+                        </div>
+                        <div class="stat-box-value">$127,450</div>
+                        <div class="stat-box-label">Total Revenue</div>
+                        <div class="stat-box-comparison">vs $113,289 last month</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-box-header">
+                            <div class="stat-box-icon" style="background:rgba(99,91,255,0.15)">📦</div>
+                            <div class="stat-box-trend up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>+8.3%</div>
+                        </div>
+                        <div class="stat-box-value">3,847</div>
+                        <div class="stat-box-label">Total Orders</div>
+                        <div class="stat-box-comparison">vs 3,552 last month</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-box-header">
+                            <div class="stat-box-icon" style="background:rgba(255,187,0,0.15)">👥</div>
+                            <div class="stat-box-trend up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>+15.2%</div>
+                        </div>
+                        <div class="stat-box-value">5,234</div>
+                        <div class="stat-box-label">Total Guests</div>
+                        <div class="stat-box-comparison">vs 4,543 last month</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-box-header">
+                            <div class="stat-box-icon" style="background:rgba(255,92,92,0.15)">⏱️</div>
+                            <div class="stat-box-trend down"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/></svg>-18%</div>
+                        </div>
+                        <div class="stat-box-value">14 min</div>
+                        <div class="stat-box-label">Avg Wait Time</div>
+                        <div class="stat-box-comparison">vs 17 min last month ✓</div>
+                    </div>
+                </div>
+
+                <!-- AI Analysis -->
+                <div class="ai-analysis-card">
+                    <div class="ai-analysis-header">
+                        <div class="ai-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M12 2a4 4 0 014 4c0 1.95-1.4 3.58-3.25 3.93L12 22l-.75-12.07A4.001 4.001 0 0112 2z"/></svg>AI Analysis</div>
+                        <span style="font-size:18px;font-weight:600">January 2026 vs December 2025</span>
+                    </div>
+                    <div class="ai-analysis-content">
+                        <div class="ai-summary">
+                            <h4>📊 Performance Summary</h4>
+                            <p><strong>Overall Performance: Excellent</strong> — Your restaurant showed strong growth across all key metrics this month. Revenue increased by 12.5% ($14,161) compared to December, primarily driven by a 23% increase in weekend traffic.</p>
+                            <p><strong>Key Drivers:</strong> The new seasonal menu items contributed 18% of food sales. Dinner service revenue grew 15% while lunch remained flat. Takeout orders increased 28%, suggesting strong delivery demand.</p>
+                            <p><strong>Concern:</strong> Food costs rose to 34% (target: 30%). Beef prices increased 15% and seafood 12%. Consider adjusting menu prices or finding alternative suppliers to maintain margins.</p>
+                        </div>
+                        <div class="ai-recommendations">
+                            <div class="ai-rec-item">
+                                <h5>💡 Recommendation</h5>
+                                <p>Extend weekend hours by 1 hour — projected +$2,400/week additional revenue based on current traffic patterns.</p>
+                            </div>
+                            <div class="ai-rec-item">
+                                <h5>⚠️ Action Required</h5>
+                                <p>Review beef supplier contracts. Current prices 15% above market average.</p>
+                            </div>
+                            <div class="ai-rec-item">
+                                <h5>🎯 Opportunity</h5>
+                                <p>Lunch traffic down 8%. Consider lunch specials or office delivery partnerships.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div style="display:grid;grid-template-columns:2fr 1fr;gap:24px;margin-bottom:24px">
+                    <!-- Revenue Chart -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div class="chart-title">Revenue & Orders Trend</div>
+                            <div class="chart-tabs">
+                                <button class="chart-tab active">Revenue</button>
+                                <button class="chart-tab">Orders</button>
+                                <button class="chart-tab">Guests</button>
+                            </div>
+                        </div>
+                        <div class="bar-chart">
+                            <div class="bar-group"><div class="bar-stack"><div class="bar revenue" style="height:65%" data-value="$98,420"></div></div><div class="bar-label">Aug</div></div>
+                            <div class="bar-group"><div class="bar-stack"><div class="bar revenue" style="height:72%" data-value="$108,630"></div></div><div class="bar-label">Sep</div></div>
+                            <div class="bar-group"><div class="bar-stack"><div class="bar revenue" style="height:78%" data-value="$117,840"></div></div><div class="bar-label">Oct</div></div>
+                            <div class="bar-group"><div class="bar-stack"><div class="bar revenue" style="height:92%" data-value="$138,920"></div></div><div class="bar-label">Nov</div></div>
+                            <div class="bar-group"><div class="bar-stack"><div class="bar revenue" style="height:75%" data-value="$113,289"></div></div><div class="bar-label">Dec</div></div>
+                            <div class="bar-group"><div class="bar-stack"><div class="bar revenue" style="height:85%" data-value="$127,450"></div></div><div class="bar-label">Jan</div></div>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;padding-top:16px;border-top:1px solid var(--border-primary)">
+                            <div><span style="font-size:12px;color:var(--text-tertiary)">Average</span><div style="font-size:18px;font-weight:700;font-family:var(--font-mono)">$117,425</div></div>
+                            <div><span style="font-size:12px;color:var(--text-tertiary)">Highest</span><div style="font-size:18px;font-weight:700;font-family:var(--font-mono);color:var(--accent-success)">$138,920</div></div>
+                            <div><span style="font-size:12px;color:var(--text-tertiary)">Lowest</span><div style="font-size:18px;font-weight:700;font-family:var(--font-mono);color:var(--accent-danger)">$98,420</div></div>
+                            <div><span style="font-size:12px;color:var(--text-tertiary)">Growth</span><div style="font-size:18px;font-weight:700;font-family:var(--font-mono);color:var(--accent-success)">+29.5%</div></div>
+                        </div>
+                    </div>
+
+                    <!-- Sales by Category -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div class="chart-title">Sales by Category</div>
+                        </div>
+                        <div style="display:flex;align-items:center;justify-content:center;padding:20px 0">
+                            <div class="donut-chart" style="background:conic-gradient(var(--accent-success) 0deg 252deg, var(--accent-primary) 252deg 320deg, var(--accent-warning) 320deg 360deg)">
+                                <div class="donut-center">
+                                    <div class="donut-value">$127K</div>
+                                    <div class="donut-label">Total</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:12px">
+                            <div style="display:flex;align-items:center;justify-content:space-between"><div style="display:flex;align-items:center;gap:8px"><div style="width:12px;height:12px;border-radius:3px;background:var(--accent-success)"></div><span style="font-size:13px">Food</span></div><span style="font-family:var(--font-mono);font-size:13px">$98,420 (70%)</span></div>
+                            <div style="display:flex;align-items:center;justify-content:space-between"><div style="display:flex;align-items:center;gap:8px"><div style="width:12px;height:12px;border-radius:3px;background:var(--accent-primary)"></div><span style="font-size:13px">Beverages</span></div><span style="font-family:var(--font-mono);font-size:13px">$24,230 (19%)</span></div>
+                            <div style="display:flex;align-items:center;justify-content:space-between"><div style="display:flex;align-items:center;gap:8px"><div style="width:12px;height:12px;border-radius:3px;background:var(--accent-warning)"></div><span style="font-size:13px">Desserts</span></div><span style="font-family:var(--font-mono);font-size:13px">$4,800 (11%)</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comparison & Heatmap Row -->
+                <div class="comparison-grid">
+                    <!-- Month Comparison -->
+                    <div class="comparison-card">
+                        <div class="comparison-title">
+                            <span>📈 Month-over-Month Comparison</span>
+                            <span style="font-size:12px;color:var(--text-tertiary)">Jan vs Dec</span>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 80px 80px 70px;gap:8px;margin-bottom:8px;font-size:11px;color:var(--text-tertiary);padding:8px 0;border-bottom:1px solid var(--border-primary)">
+                            <div>Metric</div><div style="text-align:right">Dec</div><div style="text-align:right">Jan</div><div style="text-align:right">Change</div>
+                        </div>
+                        <div class="comparison-row"><div class="comparison-label">Revenue</div><div class="comparison-values"><div class="comparison-val prev">$113,289</div><div class="comparison-val">$127,450</div></div><div class="comparison-change up">+12.5%</div></div>
+                        <div class="comparison-row"><div class="comparison-label">Orders</div><div class="comparison-values"><div class="comparison-val prev">3,552</div><div class="comparison-val">3,847</div></div><div class="comparison-change up">+8.3%</div></div>
+                        <div class="comparison-row"><div class="comparison-label">Guests</div><div class="comparison-values"><div class="comparison-val prev">4,543</div><div class="comparison-val">5,234</div></div><div class="comparison-change up">+15.2%</div></div>
+                        <div class="comparison-row"><div class="comparison-label">Avg Ticket</div><div class="comparison-values"><div class="comparison-val prev">$31.89</div><div class="comparison-val">$33.13</div></div><div class="comparison-change up">+3.9%</div></div>
+                        <div class="comparison-row"><div class="comparison-label">Food Cost %</div><div class="comparison-values"><div class="comparison-val prev">30.2%</div><div class="comparison-val">34.0%</div></div><div class="comparison-change down">+3.8%</div></div>
+                        <div class="comparison-row"><div class="comparison-label">Labor Cost %</div><div class="comparison-values"><div class="comparison-val prev">26.8%</div><div class="comparison-val">25.4%</div></div><div class="comparison-change up">-1.4%</div></div>
+                    </div>
+
+                    <!-- Peak Hours Heatmap -->
+                    <div class="comparison-card">
+                        <div class="comparison-title">
+                            <span>🔥 Peak Hours Heatmap</span>
+                            <span style="font-size:12px;color:var(--text-tertiary)">By revenue</span>
+                        </div>
+                        <div class="heatmap-container">
+                            <div></div><div class="heatmap-header">Mon</div><div class="heatmap-header">Tue</div><div class="heatmap-header">Wed</div><div class="heatmap-header">Thu</div><div class="heatmap-header">Fri</div><div class="heatmap-header">Sat</div><div class="heatmap-header">Sun</div>
+                            <div class="heatmap-row-label">11-1pm</div><div class="heatmap-cell level-2">$4k</div><div class="heatmap-cell level-2">$4k</div><div class="heatmap-cell level-3">$5k</div><div class="heatmap-cell level-2">$4k</div><div class="heatmap-cell level-3">$6k</div><div class="heatmap-cell level-4">$8k</div><div class="heatmap-cell level-3">$6k</div>
+                            <div class="heatmap-row-label">1-3pm</div><div class="heatmap-cell level-1">$2k</div><div class="heatmap-cell level-1">$2k</div><div class="heatmap-cell level-1">$2k</div><div class="heatmap-cell level-1">$2k</div><div class="heatmap-cell level-2">$3k</div><div class="heatmap-cell level-3">$5k</div><div class="heatmap-cell level-2">$4k</div>
+                            <div class="heatmap-row-label">5-7pm</div><div class="heatmap-cell level-3">$5k</div><div class="heatmap-cell level-3">$5k</div><div class="heatmap-cell level-3">$6k</div><div class="heatmap-cell level-4">$7k</div><div class="heatmap-cell level-5">$9k</div><div class="heatmap-cell level-5">$12k</div><div class="heatmap-cell level-4">$8k</div>
+                            <div class="heatmap-row-label">7-9pm</div><div class="heatmap-cell level-4">$7k</div><div class="heatmap-cell level-4">$7k</div><div class="heatmap-cell level-4">$8k</div><div class="heatmap-cell level-5">$9k</div><div class="heatmap-cell level-5">$11k</div><div class="heatmap-cell level-5">$14k</div><div class="heatmap-cell level-5">$10k</div>
+                            <div class="heatmap-row-label">9-11pm</div><div class="heatmap-cell level-1">$2k</div><div class="heatmap-cell level-2">$3k</div><div class="heatmap-cell level-2">$3k</div><div class="heatmap-cell level-3">$4k</div><div class="heatmap-cell level-4">$7k</div><div class="heatmap-cell level-5">$9k</div><div class="heatmap-cell level-3">$5k</div>
+                        </div>
+                        <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border-primary);display:flex;justify-content:space-between;font-size:12px">
+                            <div><span style="color:var(--text-tertiary)">Peak:</span> <strong>Sat 7-9pm</strong></div>
+                            <div><span style="color:var(--text-tertiary)">Slow:</span> <strong>Mon 1-3pm</strong></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Items Row -->
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:24px">
+                    <!-- Top Selling Items -->
+                    <div class="chart-card">
+                        <div class="chart-header"><div class="chart-title">🏆 Top Selling Items</div></div>
+                        <div class="top-items-list">
+                            <div class="top-item"><div class="top-item-rank gold">1</div><div class="top-item-info"><div class="top-item-name">Grilled Salmon</div><div class="top-item-meta">487 orders</div></div><div class="top-item-value">$12,175</div></div>
+                            <div class="top-item"><div class="top-item-rank silver">2</div><div class="top-item-info"><div class="top-item-name">Ribeye Steak</div><div class="top-item-meta">342 orders</div></div><div class="top-item-value">$11,628</div></div>
+                            <div class="top-item"><div class="top-item-rank bronze">3</div><div class="top-item-info"><div class="top-item-name">Truffle Pasta</div><div class="top-item-meta">398 orders</div></div><div class="top-item-value">$8,756</div></div>
+                            <div class="top-item"><div class="top-item-rank">4</div><div class="top-item-info"><div class="top-item-name">Caesar Salad</div><div class="top-item-meta">521 orders</div></div><div class="top-item-value">$6,252</div></div>
+                            <div class="top-item"><div class="top-item-rank">5</div><div class="top-item-info"><div class="top-item-name">Craft Burger</div><div class="top-item-meta">445 orders</div></div><div class="top-item-value">$5,785</div></div>
+                        </div>
+                    </div>
+
+                    <!-- Top Performing Staff -->
+                    <div class="chart-card">
+                        <div class="chart-header"><div class="chart-title">⭐ Top Staff by Revenue</div></div>
+                        <div class="top-items-list">
+                            <div class="top-item"><div class="top-item-rank gold">1</div><div class="top-item-info"><div class="top-item-name">Lisa Siorm</div><div class="top-item-meta">Waiter • 312 tables</div></div><div class="top-item-value">$24,840</div></div>
+                            <div class="top-item"><div class="top-item-rank silver">2</div><div class="top-item-info"><div class="top-item-name">Oleh Tarasenko</div><div class="top-item-meta">Bartender • 1,247 drinks</div></div><div class="top-item-value">$18,705</div></div>
+                            <div class="top-item"><div class="top-item-rank bronze">3</div><div class="top-item-info"><div class="top-item-name">Anna Koval</div><div class="top-item-meta">Waiter • 287 tables</div></div><div class="top-item-value">$16,492</div></div>
+                            <div class="top-item"><div class="top-item-rank">4</div><div class="top-item-info"><div class="top-item-name">Peter Brown</div><div class="top-item-meta">Waiter • 256 tables</div></div><div class="top-item-value">$14,208</div></div>
+                        </div>
+                    </div>
+
+                    <!-- Customer Insights -->
+                    <div class="chart-card">
+                        <div class="chart-header"><div class="chart-title">👥 Customer Insights</div></div>
+                        <div style="display:flex;flex-direction:column;gap:16px">
+                            <div style="padding:16px;background:var(--bg-tertiary);border-radius:var(--radius-md)">
+                                <div style="font-size:12px;color:var(--text-tertiary);margin-bottom:4px">New Customers</div>
+                                <div style="font-size:24px;font-weight:700;font-family:var(--font-mono)">847</div>
+                                <div style="font-size:11px;color:var(--accent-success)">+23% vs last month</div>
+                            </div>
+                            <div style="padding:16px;background:var(--bg-tertiary);border-radius:var(--radius-md)">
+                                <div style="font-size:12px;color:var(--text-tertiary);margin-bottom:4px">Returning Customers</div>
+                                <div style="font-size:24px;font-weight:700;font-family:var(--font-mono)">1,892</div>
+                                <div style="font-size:11px;color:var(--text-secondary)">36% of total</div>
+                            </div>
+                            <div style="padding:16px;background:var(--bg-tertiary);border-radius:var(--radius-md)">
+                                <div style="font-size:12px;color:var(--text-tertiary);margin-bottom:4px">Avg Customer Rating</div>
+                                <div style="font-size:24px;font-weight:700;font-family:var(--font-mono)">4.7 ⭐</div>
+                                <div style="font-size:11px;color:var(--accent-success)">Based on 342 reviews</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.querySelectorAll('.period-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        document.querySelectorAll('.chart-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                this.parentElement.querySelectorAll('.chart-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

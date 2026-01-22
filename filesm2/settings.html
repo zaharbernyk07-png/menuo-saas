@@ -1,0 +1,1736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings — Menuo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .settings-layout {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 24px;
+            min-height: calc(100vh - 180px);
+        }
+
+        /* Settings Navigation */
+        .settings-nav {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-primary);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            height: fit-content;
+            position: sticky;
+            top: 24px;
+        }
+
+        .settings-nav-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-tertiary);
+            padding: 8px 12px;
+            margin-top: 16px;
+        }
+
+        .settings-nav-title:first-child {
+            margin-top: 0;
+        }
+
+        .settings-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            transition: all var(--transition-fast);
+            cursor: pointer;
+        }
+
+        .settings-nav-item:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .settings-nav-item.active {
+            background: rgba(99, 91, 255, 0.1);
+            color: var(--accent-primary);
+        }
+
+        .settings-nav-item svg {
+            width: 18px;
+            height: 18px;
+            opacity: 0.7;
+        }
+
+        .settings-nav-item.active svg {
+            opacity: 1;
+        }
+
+        .settings-nav-item.danger {
+            color: var(--accent-danger);
+        }
+
+        .settings-nav-item.danger:hover {
+            background: rgba(255, 107, 107, 0.1);
+        }
+
+        /* Settings Content */
+        .settings-content {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .settings-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-primary);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+
+        .settings-section-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-primary);
+        }
+
+        .settings-section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .settings-section-desc {
+            font-size: 13px;
+            color: var(--text-tertiary);
+        }
+
+        .settings-section-body {
+            padding: 24px;
+        }
+
+        /* Form Styles */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-row.three-col {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-primary);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 14px;
+            font-family: inherit;
+            transition: all var(--transition-fast);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(99, 91, 255, 0.15);
+        }
+
+        .form-input:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .form-hint {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            margin-top: 6px;
+        }
+
+        textarea.form-input {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* Profile Header */
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .profile-avatar {
+            position: relative;
+        }
+
+        .profile-avatar-img {
+            width: 100px;
+            height: 100px;
+            border-radius: var(--radius-lg);
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-success));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .profile-avatar-edit {
+            position: absolute;
+            bottom: -4px;
+            right: -4px;
+            width: 32px;
+            height: 32px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .profile-avatar-edit:hover {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: white;
+        }
+
+        .profile-avatar-edit svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .profile-info h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .profile-info p {
+            color: var(--text-tertiary);
+            font-size: 14px;
+        }
+
+        .profile-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: linear-gradient(135deg, rgba(99, 91, 255, 0.15), rgba(0, 212, 170, 0.15));
+            border: 1px solid rgba(99, 91, 255, 0.3);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--accent-primary);
+            margin-top: 8px;
+        }
+
+        /* Toggle Switch */
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border-primary);
+        }
+
+        .toggle-row:last-child {
+            border-bottom: none;
+        }
+
+        .toggle-info {
+            flex: 1;
+        }
+
+        .toggle-title {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .toggle-desc {
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 26px;
+            background: var(--bg-tertiary);
+            border-radius: 13px;
+            cursor: pointer;
+            transition: background var(--transition-fast);
+        }
+
+        .toggle-switch.active {
+            background: var(--accent-primary);
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform var(--transition-fast);
+        }
+
+        .toggle-switch.active::after {
+            transform: translateX(22px);
+        }
+
+        /* Hours Editor */
+        .hours-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .hours-row {
+            display: grid;
+            grid-template-columns: 100px 1fr 1fr auto;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .hours-day {
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .hours-input {
+            padding: 10px 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-primary);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 13px;
+            font-family: inherit;
+            text-align: center;
+        }
+
+        .hours-closed {
+            padding: 6px 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-primary);
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            color: var(--text-tertiary);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .hours-closed:hover {
+            border-color: var(--accent-danger);
+            color: var(--accent-danger);
+        }
+
+        .hours-closed.is-closed {
+            background: rgba(255, 107, 107, 0.15);
+            border-color: var(--accent-danger);
+            color: var(--accent-danger);
+        }
+
+        /* Integration Cards */
+        .integrations-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .integration-card {
+            padding: 20px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-primary);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .integration-card.connected {
+            border-color: var(--accent-success);
+        }
+
+        .integration-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            background: var(--bg-secondary);
+        }
+
+        .integration-info {
+            flex: 1;
+        }
+
+        .integration-name {
+            font-weight: 500;
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+
+        .integration-status {
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+
+        .integration-status.connected {
+            color: var(--accent-success);
+        }
+
+        .integration-action {
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-family: inherit;
+        }
+
+        .integration-action.connect {
+            background: var(--accent-primary);
+            border: none;
+            color: white;
+        }
+
+        .integration-action.connect:hover {
+            background: var(--accent-primary-hover);
+        }
+
+        .integration-action.disconnect {
+            background: none;
+            border: 1px solid var(--border-secondary);
+            color: var(--text-secondary);
+        }
+
+        .integration-action.disconnect:hover {
+            border-color: var(--accent-danger);
+            color: var(--accent-danger);
+        }
+
+        /* Team Members */
+        .team-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .team-member {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+        }
+
+        .team-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--accent-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+        }
+
+        .team-info {
+            flex: 1;
+        }
+
+        .team-name {
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .team-email {
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+
+        .team-role {
+            padding: 4px 12px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .team-role.admin {
+            background: rgba(99, 91, 255, 0.15);
+            color: var(--accent-primary);
+        }
+
+        .team-role.manager {
+            background: rgba(0, 212, 170, 0.15);
+            color: var(--accent-success);
+        }
+
+        .team-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .team-action-btn {
+            width: 32px;
+            height: 32px;
+            background: var(--bg-secondary);
+            border: none;
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+        }
+
+        .team-action-btn:hover {
+            color: var(--accent-primary);
+        }
+
+        .team-action-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Support Section */
+        .support-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .support-card {
+            padding: 24px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-primary);
+            border-radius: var(--radius-md);
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .support-card:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        .support-icon {
+            width: 56px;
+            height: 56px;
+            background: rgba(99, 91, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+        }
+
+        .support-icon svg {
+            width: 24px;
+            height: 24px;
+            color: var(--accent-primary);
+        }
+
+        .support-title {
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        .support-desc {
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+
+        /* Danger Zone */
+        .danger-zone {
+            border-color: rgba(255, 107, 107, 0.3);
+        }
+
+        .danger-zone .settings-section-header {
+            background: rgba(255, 107, 107, 0.05);
+            border-bottom-color: rgba(255, 107, 107, 0.2);
+        }
+
+        .danger-zone .settings-section-title {
+            color: var(--accent-danger);
+        }
+
+        .danger-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-primary);
+        }
+
+        .danger-item:last-child {
+            border-bottom: none;
+        }
+
+        .danger-info h4 {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .danger-info p {
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+
+        .btn-danger {
+            padding: 10px 20px;
+            background: rgba(255, 107, 107, 0.15);
+            border: 1px solid var(--accent-danger);
+            border-radius: var(--radius-md);
+            color: var(--accent-danger);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-family: inherit;
+        }
+
+        .btn-danger:hover {
+            background: var(--accent-danger);
+            color: white;
+        }
+
+        /* Billing Section */
+        .billing-card {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(99, 91, 255, 0.1), rgba(0, 212, 170, 0.1));
+            border: 1px solid rgba(99, 91, 255, 0.2);
+            border-radius: var(--radius-md);
+            margin-bottom: 24px;
+        }
+
+        .billing-plan {
+            flex: 1;
+        }
+
+        .billing-plan-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .billing-plan-price {
+            font-size: 14px;
+            color: var(--text-tertiary);
+        }
+
+        .billing-plan-price span {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+        }
+
+        .billing-features {
+            display: flex;
+            gap: 16px;
+            margin-top: 12px;
+        }
+
+        .billing-feature {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .billing-feature svg {
+            width: 14px;
+            height: 14px;
+            color: var(--accent-success);
+        }
+
+        /* Usage Stats */
+        .usage-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .usage-stat {
+            padding: 16px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            text-align: center;
+        }
+
+        .usage-value {
+            font-size: 24px;
+            font-weight: 700;
+            font-family: var(--font-mono);
+            margin-bottom: 4px;
+        }
+
+        .usage-label {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .usage-bar {
+            width: 100%;
+            height: 4px;
+            background: var(--bg-secondary);
+            border-radius: 2px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .usage-fill {
+            height: 100%;
+            background: var(--accent-primary);
+            border-radius: 2px;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all var(--transition-normal);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-xl);
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow: hidden;
+            transform: scale(0.9);
+            transition: transform var(--transition-normal);
+        }
+
+        .modal-overlay.active .modal {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-primary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            background: none;
+            border: none;
+            color: var(--text-tertiary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-sm);
+            transition: all var(--transition-fast);
+        }
+
+        .modal-close:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-primary);
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        /* System Status */
+        .system-status {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--accent-success);
+        }
+
+        .status-dot.warning {
+            background: var(--accent-warning);
+        }
+
+        .status-dot.error {
+            background: var(--accent-danger);
+        }
+
+        .status-name {
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .status-value {
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+
+        /* Backup Section */
+        .backup-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            margin-bottom: 12px;
+        }
+
+        .backup-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-primary);
+        }
+
+        .backup-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .backup-info {
+            flex: 1;
+        }
+
+        .backup-name {
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .backup-date {
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+
+        .backup-size {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            font-family: var(--font-mono);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon">M</div>
+                    <span class="logo-text">Menuo</span>
+                </a>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Main</div>
+                    <a href="index.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</a>
+                    <a href="orders.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>Orders<span class="nav-badge">12</span></a>
+                    <a href="reservations.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Reservations</a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Management</div>
+                    <a href="menus.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>Menus</a>
+                    <a href="tables.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8m-4-4v4"/></svg>Tables</a>
+                    <a href="staff.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Staff</a>
+                    <a href="inventory.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7h-9m9 10h-9M4 7h.01M4 17h.01"/></svg>Inventory</a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Analytics</div>
+                    <a href="statistics.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>Statistics</a>
+                    <a href="finances.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Finances</a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">AI</div>
+                    <a href="ai.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 014 4c0 1.95-1.4 3.58-3.25 3.93L12 22l-.75-12.07A4.001 4.001 0 0112 2z"/><circle cx="12" cy="6" r="2"/></svg>Assistant<span class="nav-badge" style="background:var(--gradient-stripe);color:white">NEW</span></a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Plan</div>
+                    <a href="plan.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Subscription<span class="nav-badge" style="background:linear-gradient(135deg,#635bff,#00d4aa);color:white">PRO</span></a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">System</div>
+                    <a href="settings.html" class="nav-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Settings</a>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-card">
+                    <div class="user-avatar">ZB</div>
+                    <div class="user-info">
+                        <div class="user-name">Zakhar Bernyk</div>
+                        <div class="user-role">Administrator</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="header">
+                <div class="header-left">
+                    <h1 class="page-title">Settings</h1>
+                </div>
+                <div class="header-right">
+                    <button class="btn-secondary" onclick="exportSettings()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        Export Data
+                    </button>
+                    <button class="btn-primary" onclick="saveAllSettings()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                        Save Changes
+                    </button>
+                </div>
+            </header>
+
+            <div class="dashboard">
+                <div class="settings-layout">
+                    <!-- Settings Navigation -->
+                    <div class="settings-nav">
+                        <div class="settings-nav-title">Restaurant</div>
+                        <div class="settings-nav-item active" onclick="scrollToSection('profile')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                            Restaurant Profile
+                        </div>
+                        <div class="settings-nav-item" onclick="scrollToSection('hours')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            Operating Hours
+                        </div>
+                        <div class="settings-nav-item" onclick="scrollToSection('notifications')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+                            Notifications
+                        </div>
+
+                        <div class="settings-nav-title">System</div>
+                        <div class="settings-nav-item" onclick="scrollToSection('team')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87m-4-12a4 4 0 010 7.75"/></svg>
+                            Team & Permissions
+                        </div>
+                        <div class="settings-nav-item" onclick="scrollToSection('integrations')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                            Integrations
+                        </div>
+                        <div class="settings-nav-item" onclick="scrollToSection('billing')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                            Billing & Usage
+                        </div>
+                        <div class="settings-nav-item" onclick="scrollToSection('backup')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+                            Backup & Security
+                        </div>
+
+                        <div class="settings-nav-title">Support</div>
+                        <div class="settings-nav-item" onclick="scrollToSection('support')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                            Help & Support
+                        </div>
+                        <div class="settings-nav-item" onclick="scrollToSection('status')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                            System Status
+                        </div>
+
+                        <div class="settings-nav-title">Danger Zone</div>
+                        <div class="settings-nav-item danger" onclick="scrollToSection('danger')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                            Danger Zone
+                        </div>
+                    </div>
+
+                    <!-- Settings Content -->
+                    <div class="settings-content">
+                        <!-- Restaurant Profile -->
+                        <div class="settings-section" id="profile">
+                            <div class="settings-section-header">
+                                <div class="settings-section-title">Restaurant Profile</div>
+                                <div class="settings-section-desc">Manage your restaurant's public information</div>
+                            </div>
+                            <div class="settings-section-body">
+                                <div class="profile-header">
+                                    <div class="profile-avatar">
+                                        <div class="profile-avatar-img">M</div>
+                                        <div class="profile-avatar-edit" onclick="changeAvatar()">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                                        </div>
+                                    </div>
+                                    <div class="profile-info">
+                                        <h2>Menuo Restaurant</h2>
+                                        <p>Fine Dining • Italian Cuisine</p>
+                                        <div class="profile-badge">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                                            PRO Plan Active
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">Restaurant Name</label>
+                                        <input type="text" class="form-input" value="Menuo Restaurant">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Cuisine Type</label>
+                                        <select class="form-input">
+                                            <option>Italian</option>
+                                            <option>French</option>
+                                            <option>American</option>
+                                            <option>Asian</option>
+                                            <option>Mexican</option>
+                                            <option>Mediterranean</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Description</label>
+                                    <textarea class="form-input" placeholder="Tell customers about your restaurant...">Award-winning Italian restaurant serving authentic cuisine with locally sourced ingredients. Experience the taste of Italy in the heart of the city.</textarea>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">Phone Number</label>
+                                        <input type="tel" class="form-input" value="+1 (555) 123-4567">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" class="form-input" value="contact@menuo.restaurant">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Address</label>
+                                    <input type="text" class="form-input" value="123 Gourmet Street, Culinary District, NY 10001">
+                                </div>
+                                <div class="form-row three-col">
+                                    <div class="form-group">
+                                        <label class="form-label">City</label>
+                                        <input type="text" class="form-input" value="New York">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">State</label>
+                                        <input type="text" class="form-input" value="NY">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">ZIP Code</label>
+                                        <input type="text" class="form-input" value="10001">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Operating Hours -->
+                        <div class="settings-section" id="hours">
+                            <div class="settings-section-header">
+                                <div class="settings-section-title">Operating Hours</div>
+                                <div class="settings-section-desc">Set your restaurant's working hours</div>
+                            </div>
+                            <div class="settings-section-body">
+                                <div class="hours-grid">
+                                    <div class="hours-row">
+                                        <span class="hours-day">Monday</span>
+                                        <input type="time" class="hours-input" value="11:00">
+                                        <input type="time" class="hours-input" value="22:00">
+                                        <button class="hours-closed">Closed</button>
+                                    </div>
+                                    <div class="hours-row">
+                                        <span class="hours-day">Tuesday</span>
+                                        <input type="time" class="hours-input" value="11:00">
+                                        <input type="time" class="hours-input" value="22:00">
+                                        <button class="hours-closed">Closed</button>
+                                    </div>
+                                    <div class="hours-row">
+                                        <span class="hours-day">Wednesday</span>
+                                        <input type="time" class="hours-input" value="11:00">
+                                        <input type="time" class="hours-input" value="22:00">
+                                        <button class="hours-closed">Closed</button>
+                                    </div>
+                                    <div class="hours-row">
+                                        <span class="hours-day">Thursday</span>
+                                        <input type="time" class="hours-input" value="11:00">
+                                        <input type="time" class="hours-input" value="22:00">
+                                        <button class="hours-closed">Closed</button>
+                                    </div>
+                                    <div class="hours-row">
+                                        <span class="hours-day">Friday</span>
+                                        <input type="time" class="hours-input" value="11:00">
+                                        <input type="time" class="hours-input" value="23:00">
+                                        <button class="hours-closed">Closed</button>
+                                    </div>
+                                    <div class="hours-row">
+                                        <span class="hours-day">Saturday</span>
+                                        <input type="time" class="hours-input" value="10:00">
+                                        <input type="time" class="hours-input" value="23:00">
+                                        <button class="hours-closed">Closed</button>
+                                    </div>
+                                    <div class="hours-row">
+                                        <span class="hours-day">Sunday</span>
+                                        <input type="time" class="hours-input" value="10:00" disabled>
+                                        <input type="time" class="hours-input" value="21:00" disabled>
+                                        <button class="hours-closed is-closed">Closed</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Notifications -->
+                        <div class="settings-section" id="notifications">
+                            <div class="settings-section-header">
+                                <div class="settings-section-title">Notifications</div>
+                                <div class="settings-section-desc">Configure how you receive alerts and updates</div>
+                            </div>
+                            <div class="settings-section-body">
+                                <div class="toggle-row">
+                                    <div class="toggle-info">
+                                        <div class="toggle-title">New Order Alerts</div>
+                                        <div class="toggle-desc">Get notified when new orders are placed</div>
+                                    </div>
+                                    <div class="toggle-switch active" onclick="toggleSwitch(this)"></div>
+                                </div>
+                                <div class="toggle-row">
+                                    <div class="toggle-info">
+                                        <div class="toggle-title">Reservation Reminders</div>
+                                        <div class="toggle-desc">Alerts for upcoming reservations</div>
+                                    </div>
+                                    <div class="toggle-switch active" onclick="toggleSwitch(this)"></div>
+                                </div>
+                                <div class="toggle-row">
+                                    <div class="toggle-info">
+                                        <div class="toggle-title">Low Inventory Warnings</div>
+                                        <div class="toggle-desc">Get alerted when stock is running low</div>
+                                    </div>
+                                    <div class="toggle-switch active" onclick="toggleSwitch(this)"></div>
+                                </div>
+                                <div class="toggle-row">
+                                    <div class="toggle-info">
+                                        <div class="toggle-title">Daily Summary Email</div>
+                                        <div class="toggle-desc">Receive daily performance reports</div>
+                                    </div>
+                                    <div class="toggle-switch active" onclick="toggleSwitch(this)"></div>
+                                </div>
+                                <div class="toggle-row">
+                                    <div class="toggle-info">
+                                        <div class="toggle-title">Staff Schedule Changes</div>
+                                        <div class="toggle-desc">Notifications for schedule updates</div>
+                                    </div>
+                                    <div class="toggle-switch" onclick="toggleSwitch(this)"></div>
+                                </div>
+                                <div class="toggle-row">
+                                    <div class="toggle-info">
+                                        <div class="toggle-title">Marketing & Promotions</div>
+                                        <div class="toggle-desc">Tips and feature announcements from Menuo</div>
+                                    </div>
+                                    <div class="toggle-switch" onclick="toggleSwitch(this)"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Team & Permissions -->
+                        <div class="settings-section" id="team">
+                            <div class="settings-section-header">
+                                <div class="settings-section-title">Team & Permissions</div>
+                                <div class="settings-section-desc">Manage team members and their access levels</div>
+                            </div>
+                            <div class="settings-section-body">
+                                <div class="team-list">
+                                    <div class="team-member">
+                                        <div class="team-avatar">ZB</div>
+                                        <div class="team-info">
+                                            <div class="team-name">Zakhar Bernyk</div>
+                                            <div class="team-email">zakhar@menuo.restaurant</div>
+                                        </div>
+                                        <div class="team-role admin">Owner</div>
+                                        <div class="team-actions">
+                                            <button class="team-action-btn" title="Edit">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="team-member">
+                                        <div class="team-avatar" style="background: var(--accent-success);">MK</div>
+                                        <div class="team-info">
+                                            <div class="team-name">Maria Kovalenko</div>
+                                            <div class="team-email">maria@menuo.restaurant</div>
+                                        </div>
+                                        <div class="team-role manager">Manager</div>
+                                        <div class="team-actions">
+                                            <button class="team-action-btn" title="Edit">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                            </button>
+                                            <button class="team-action-btn" title="Remove">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="team-member">
+                                        <div class="team-avatar" style="background: #f59e0b;">LS</div>
+                                        <div class="team-info">
+                                            <div class="team-name">Lisa Siorm</div>
+                                            <div class="team-email">lisa@menuo.restaurant</div>
+                                        </div>
+                                        <div class="team-role">Staff</div>
+                                        <div class="team-actions">
+                                            <button class="team-action-btn" title="Edit">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                            </button>
+                                            <button class="team-action-btn" title="Remove">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="btn-secondary" style="width: 100%; margin-top: 16px; justify-content: center;" onclick="openInviteModal()">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+                                    Invite Team Member
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Integrations -->
+                        <div class="settings-section" id="integrations">
+                            <div class="settings-section-header">
+                                <div class="settings-section-title">Integrations</div>
+                                <div class="settings-section-desc">Connect third-party services to enhance your workflow</div>
+                            </div>
+                            <div class="settings-section-body">
+                                <div class="integrations-grid">
+                                    <div class="integration-card connected">
+                                        <div class="integration-icon">📱</div>
+                                        <div class="integration-info">
+                                            <div class="integration-name">Square POS</div>
+                                            <div class="integration-status connected">Connected</div>
+                                        </div>
+                                        <button class="integration-action disconnect">Disconnect</button>
+                                    </div>
+                                    <div class="integration-card connected">
+                                        <div class="integration-icon">📧</div>
+                                        <div class="integration-info">
+                                            <div class="integration-name">Mailchimp</div>
+                                            <div class="integration-status connected">Connected</div>
+                                        </div>
+                                        <button class="integration-action disconnect">Disconnect</button>
+                                    </div>
+                                    <div class="integration-card">
+                                        <div class="integration-icon">🍽️</div>
+                                        <div class="integration-info">
+                                            <div class="integration-name">OpenTable</div>
+                                            <div class="integration-status">Not connected</div>
+                                        </div>
+                                        <button class="integration-action connect">Connect</button>
+                                    </div>
+                                    <div class="integration-card">
+                                        <div class="integration-icon">🚗</div>
+                                        <div class="integration-info">
+                                            <div class="integration-name">DoorDash</div>
+                                            <div class="integration-status">Not connected</div>
+                                        </div>
+                                        <button class="integration-action connect">Connect</button>
+                                    </div>
+                                    <div class="integration-card">
+                                        <div class="integration-icon">🛵</div>
+                                        <div class="integration-info">
+                                            <div class="integration-name">Uber Eats</div>
+                                            <div class="integration-status">Not connected</div>
+                                        </div>
+                                        <button class="integration-action connect">Connect</button>
+                                    </div>
+                                    <div class="integration-card connected">
+                                        <div class="integration-icon">📊</div>
+                                        <div class="integration-info">
+                                            <div class="integration-name">Google Analytics</div>
+                                            <div class="integration-status connected">Connected</div>
+                                        </div>
+                                        <button class="integration-action disconnect">Disconnect</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Billing & Usage -->
+                        <div class="settings-section" id="billing">
+                            <div class="settings-section-header">
+                                <div class="settings-section-title">Billing & Usage</div>
+                                <div class="settings-section-desc">Manage your subscription and view usage statistics</div>
+                            </div>
+                            <div class="settings-section-body">
+                                <div class="billing-card">
+                                    <div class="billing-plan">
+                                        <div class="billing-plan-name">Professional Plan</div>
+                                        <div class="billing-plan-price"><span>$399</span> / month</div>
+                                        <div class="billing-features">
+                                            <div class="billing-feature">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                                                Unlimited orders
+                                            </div>
+                                            <div class="billing-feature">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                                                AI Assistant
+                                            </div>
+                                            <div class="billing-feature">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                                                Advanced analytics
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <a href="plan.html" class="btn-primary">Manage Plan</a>
+                                    </div>
+                                </div>
+
+                                <div class="usage-grid">
+                                    <div class="usage-stat">
+                                        <div class="usage-value">4,521</div>
+                                        <div class="usage-label">Orders This Month</div>
+                                        <div class="usage-bar">
+                                            <div class="usage-fill" style="width: 75%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="usage-stat">
+                                        <div class="usage-value">847</div>
+                                        <div class="usage-label">Reservations</div>
+                                        <div class="usage-bar">
+                                            <div class="usage-fill" style="width: 60%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="usage-stat">
+                                        <div class="usage-value">12</div>
+                                        <div class="usage-label">Team Members</div>
+                                        <div class="usage-bar">
+                                            <div class="usage-fill" style="width: 40%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="usage-stat">
+                                        <div class="usage-value">2.4GB</div>
+                                        <div class="usage-label">Storage Used</div>
+                                        <div class="usage-bar">
+                                            <div class="usage-fill" style="width: 24%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Backup & Security -->
+                        <div class="settings-section" id="backup">
+                            <div class="settings-section-header">
+                                <div class="settings-section-title">Backup & Security</div>
+                                <div class="settings-section-desc">Manage data backups and security settings</div>
+                            </div>
+                            <div class="settings-section-body">
+                                <div class="toggle-row">
+                                    <div class="toggle-info">
+                                        <div class="toggle-title">Automatic Daily Backups</div>
+                                        <div class="toggle-desc">Your data is automatically backed up every night at 3:00 AM</div>
+                                    </div>
+                                    <div class="toggle-switch active" onclick="toggleSwitch(this)"></div>
+                                </div>
+                                <div class="toggle-row">
+                                    <div class="toggle-info">
+                                        <div class="toggle-title">Two-Factor Authentication</div>
+                                        <div class="toggle-desc">Require 2FA for all admin accounts</div>
+                                    </div>
+                                    <div class="toggle-switch active" onclick="toggleSwitch(this)"></div>
+                                </div>
+
+                                <h4 style="margin: 24px 0 16px; font-size: 14px;">Recent Backups</h4>
+                                <div class="backup-item">
+                                    <div class="backup-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+                                    </div>
+                                    <div class="backup-info">
+                                        <div class="backup-name">Full Backup</div>
+                                        <div class="backup-date">January 8, 2026 at 3:00 AM</div>
+                                    </div>
+                                    <div class="backup-size">245 MB</div>
+                                    <button class="btn-secondary" style="padding: 8px 16px; font-size: 12px;">Download</button>
+                                </div>
+                                <div class="backup-item">
+                                    <div class="backup-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+                                    </div>
+                                    <div class="backup-info">
+                                        <div class="backup-name">Full Backup</div>
+                                        <div class="backup-date">January 7, 2026 at 3:00 AM</div>
+                                    </div>
+                                    <div class="backup-size">243 MB</div>
+                                    <button class="btn-secondary" style="padding: 8px 16px; font-size: 12px;">Download</button>
+                                </div>
+
+                                <button class="btn-primary" style="margin-top: 16px;" onclick="createBackup()">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+                                    Create Manual Backup
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Help & Support -->
+                        <div class="settings-section" id="support">
+                            <div class="settings-section-header">
+                                <div class="settings-section-title">Help & Support</div>
+                                <div class="settings-section-desc">Get help from our support team or browse documentation</div>
+                            </div>
+                            <div class="settings-section-body">
+                                <div class="support-cards">
+                                    <div class="support-card" onclick="openChat()">
+                                        <div class="support-icon">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                                        </div>
+                                        <div class="support-title">Live Chat</div>
+                                        <div class="support-desc">Chat with our support team</div>
+                                    </div>
+                                    <div class="support-card" onclick="callSupport()">
+                                        <div class="support-icon">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+                                        </div>
+                                        <div class="support-title">Call Us</div>
+                                        <div class="support-desc">+1 (800) 123-4567</div>
+                                    </div>
+                                    <div class="support-card" onclick="openDocs()">
+                                        <div class="support-icon">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                                        </div>
+                                        <div class="support-title">Documentation</div>
+                                        <div class="support-desc">Browse help articles</div>
+                                    </div>
+                                </div>
+
+                                <div style="margin-top: 24px; padding: 20px; background: var(--bg-tertiary); border-radius: var(--radius-md);">
+                                    <h4 style="font-size: 14px; margin-bottom: 12px;">Send us a message</h4>
+                                    <div class="form-group">
+                                        <label class="form-label">Subject</label>
+                                        <input type="text" class="form-input" placeholder="How can we help?">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Message</label>
+                                        <textarea class="form-input" placeholder="Describe your issue or question..."></textarea>
+                                    </div>
+                                    <button class="btn-primary">Send Message</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- System Status -->
+                        <div class="settings-section" id="status">
+                            <div class="settings-section-header">
+                                <div class="settings-section-title">System Status</div>
+                                <div class="settings-section-desc">Current status of all Menuo services</div>
+                            </div>
+                            <div class="settings-section-body">
+                                <div class="system-status">
+                                    <div class="status-item">
+                                        <div class="status-dot"></div>
+                                        <div class="status-name">Order Management</div>
+                                        <div class="status-value">Operational</div>
+                                    </div>
+                                    <div class="status-item">
+                                        <div class="status-dot"></div>
+                                        <div class="status-name">Reservation System</div>
+                                        <div class="status-value">Operational</div>
+                                    </div>
+                                    <div class="status-item">
+                                        <div class="status-dot"></div>
+                                        <div class="status-name">Inventory Tracking</div>
+                                        <div class="status-value">Operational</div>
+                                    </div>
+                                    <div class="status-item">
+                                        <div class="status-dot"></div>
+                                        <div class="status-name">AI Assistant</div>
+                                        <div class="status-value">Operational</div>
+                                    </div>
+                                    <div class="status-item">
+                                        <div class="status-dot"></div>
+                                        <div class="status-name">Payment Processing</div>
+                                        <div class="status-value">Operational</div>
+                                    </div>
+                                    <div class="status-item">
+                                        <div class="status-dot"></div>
+                                        <div class="status-name">Email Notifications</div>
+                                        <div class="status-value">Operational</div>
+                                    </div>
+                                </div>
+                                <p style="margin-top: 16px; font-size: 12px; color: var(--text-tertiary);">
+                                    Last updated: January 8, 2026 at 2:45 PM • 
+                                    <a href="#" style="color: var(--accent-primary);">View status page</a>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Danger Zone -->
+                        <div class="settings-section danger-zone" id="danger">
+                            <div class="settings-section-header">
+                                <div class="settings-section-title">⚠️ Danger Zone</div>
+                                <div class="settings-section-desc">Irreversible and destructive actions</div>
+                            </div>
+                            <div class="settings-section-body">
+                                <div class="danger-item">
+                                    <div class="danger-info">
+                                        <h4>Export All Data</h4>
+                                        <p>Download a complete export of all your restaurant data</p>
+                                    </div>
+                                    <button class="btn-secondary" onclick="exportAllData()">Export Data</button>
+                                </div>
+                                <div class="danger-item">
+                                    <div class="danger-info">
+                                        <h4>Reset Demo Data</h4>
+                                        <p>Remove all demo/test data and start fresh</p>
+                                    </div>
+                                    <button class="btn-danger" onclick="resetDemoData()">Reset Data</button>
+                                </div>
+                                <div class="danger-item">
+                                    <div class="danger-info">
+                                        <h4>Disconnect from Menuo</h4>
+                                        <p>Temporarily disable your Menuo account (can be reactivated)</p>
+                                    </div>
+                                    <button class="btn-danger" onclick="disconnectAccount()">Disconnect</button>
+                                </div>
+                                <div class="danger-item">
+                                    <div class="danger-info">
+                                        <h4>Delete Account</h4>
+                                        <p>Permanently delete your account and all associated data. This action cannot be undone.</p>
+                                    </div>
+                                    <button class="btn-danger" onclick="deleteAccount()">Delete Account</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Invite Team Member Modal -->
+    <div class="modal-overlay" id="inviteModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Invite Team Member</h2>
+                <button class="modal-close" onclick="closeInviteModal()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" class="form-input" placeholder="colleague@restaurant.com">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Role</label>
+                    <select class="form-input">
+                        <option>Staff - Basic access to orders and reservations</option>
+                        <option>Manager - Full access except billing</option>
+                        <option>Admin - Full access to everything</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Personal Message (Optional)</label>
+                    <textarea class="form-input" placeholder="Welcome to the team!"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeInviteModal()">Cancel</button>
+                <button class="btn-primary" onclick="sendInvite()">Send Invitation</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Navigation
+        function scrollToSection(sectionId) {
+            document.querySelectorAll('.settings-nav-item').forEach(item => item.classList.remove('active'));
+            event.target.closest('.settings-nav-item').classList.add('active');
+            document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Toggle switches
+        function toggleSwitch(element) {
+            element.classList.toggle('active');
+        }
+
+        // Modal functions
+        function openInviteModal() {
+            document.getElementById('inviteModal').classList.add('active');
+        }
+
+        function closeInviteModal() {
+            document.getElementById('inviteModal').classList.remove('active');
+        }
+
+        function sendInvite() {
+            alert('Invitation sent successfully!');
+            closeInviteModal();
+        }
+
+        // Actions
+        function saveAllSettings() {
+            alert('All settings saved successfully!');
+        }
+
+        function exportSettings() {
+            alert('Exporting settings...');
+        }
+
+        function changeAvatar() {
+            alert('Click to upload a new restaurant logo');
+        }
+
+        function createBackup() {
+            alert('Creating manual backup... This may take a few minutes.');
+        }
+
+        function openChat() {
+            alert('Opening live chat support...');
+        }
+
+        function callSupport() {
+            window.location.href = 'tel:+18001234567';
+        }
+
+        function openDocs() {
+            alert('Opening documentation...');
+        }
+
+        function exportAllData() {
+            if (confirm('This will export all your restaurant data. Continue?')) {
+                alert('Preparing your data export...');
+            }
+        }
+
+        function resetDemoData() {
+            if (confirm('Are you sure you want to reset all demo data? This cannot be undone.')) {
+                alert('Demo data has been reset.');
+            }
+        }
+
+        function disconnectAccount() {
+            if (confirm('Are you sure you want to disconnect your account? You can reactivate it later.')) {
+                alert('Account disconnected. You will be logged out.');
+            }
+        }
+
+        function deleteAccount() {
+            if (confirm('⚠️ WARNING: This will permanently delete your account and ALL data. This action CANNOT be undone!\n\nType "DELETE" to confirm.')) {
+                const confirmation = prompt('Type "DELETE" to confirm account deletion:');
+                if (confirmation === 'DELETE') {
+                    alert('Account deletion initiated. You will receive a confirmation email.');
+                } else {
+                    alert('Account deletion cancelled.');
+                }
+            }
+        }
+
+        // Close modals on backdrop click
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    overlay.classList.remove('active');
+                }
+            });
+        });
+
+        // Close modals on Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal-overlay.active').forEach(modal => {
+                    modal.classList.remove('active');
+                });
+            }
+        });
+
+        // Hours closed toggle
+        document.querySelectorAll('.hours-closed').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.classList.toggle('is-closed');
+                const row = this.closest('.hours-row');
+                const inputs = row.querySelectorAll('.hours-input');
+                inputs.forEach(input => {
+                    input.disabled = this.classList.contains('is-closed');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
